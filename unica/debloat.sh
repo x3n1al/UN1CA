@@ -1,19 +1,5 @@
-#
-# Copyright (C) 2023 BlackMesa123
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# Copyright (c) 2025 Salvo Giangreco
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # UN1CA debloat list
 # - Add entries inside the specific partition containing that file (<PARTITION>_DEBLOAT+="")
@@ -28,258 +14,21 @@ VENDOR_DEBLOAT+="
 etc/dpolicy
 "
 
-# .odex files
+# Samsung PROCA certificate DB
 SYSTEM_DEBLOAT+="
-system/app/AllShareAware/oat
-system/app/AllshareMediaShare/oat
-system/app/ApexService/oat
-system/app/ARCore/oat
-system/app/ARDrawing/oat
-system/app/AutomationTest_FB/oat
-system/app/BBCAgent/oat
-system/app/BGMProvider/oat
-system/app/BixbyWakeup/oat
-system/app/BluetoothAgent/oat
-system/app/BrightnessBackupService/oat
-system/app/ccinfo/oat
-system/app/ChromeCustomizations/oat
-system/app/ClipboardEdge/oat
-system/app/CocktailQuickTool/oat
-system/app/DictDiotekForSec/oat
-system/app/DRParser/oat
-system/app/DsmsAPK/oat
-system/app/EasymodeContactsWidget81/oat
-system/app/EasyOneHand3/oat
-system/app/EdmSimPinService/oat
-system/app/EmergencyLauncher/oat
-system/app/FactoryAirCommandManager/oat
-system/app/FactoryCameraFB/oat
-system/app/FilterProvider/oat
-system/app/Foundation/oat
-system/app/GalaxyResourceUpdater/oat
-system/app/GearManagerStub/oat
-system/app/GoogleExtShared/oat
-system/app/GooglePrintRecommendationService/oat
-system/app/HandwritingService/oat
-system/app/HiyaService/oat
-system/app/HMT/oat
-system/app/HoneyBoard/oat
-system/app/KidsHome_Installer/oat
-system/app/LiveTranscribe/oat
-system/app/MAPSAgent/oat
-system/app/MdecService/oat
-system/app/MDMApp/oat
-system/app/MdxKitService/oat
-system/app/NfwLocationPrivacy/oat
-system/app/OCRDataProvider/oat
-system/app/PartnerBookmarksProvider/oat
-system/app/PhotoTable/oat
-system/app/Rampart/oat
-system/app/Roboto/oat
-system/app/SafetyInformation/oat
-system/app/SamsungCalendar/oat
-system/app/SamsungOne/oat
-system/app/SamsungTTS/oat
-system/app/SamsungWeather/oat
-system/app/SecFactoryPhoneTest/oat
-system/app/SecHTMLViewer/oat
-system/app/SetupWizardLegalProvider/oat
-system/app/SilentLog/oat
-system/app/SimMobilityKit/oat
-system/app/SLocation/oat
-system/app/SmartMirroring/oat
-system/app/SmartReminder/oat
-system/app/SmartSwitchAgent/oat
-system/app/SmartSwitchStub/oat
-system/app/SmartTethering/oat
-system/app/SoundPicker_U/oat
-system/app/StickerCenter/oat
-system/app/TEEgrisTuiService/oat
-system/app/TetheringAutomation/oat
-system/app/UnifiedWFC/oat
-system/app/UniversalMDMClient/oat
-system/app/USBSettings/oat
-system/app/VisionIntelligence3.7/oat
-system/app/VoiceAccess/oat
-system/app/VTCameraSetting/oat
-system/app/WifiAiService/oat
-system/app/WifiGuider/oat
-system/app/WlanTest/oat
-system/framework/arm
-system/framework/arm64
-system/framework/oat
-system/framework/boot-apache-xml.vdex
-system/framework/boot-bouncycastle.vdex
-system/framework/boot-core-icu4j.vdex
-system/framework/boot-core-libart.vdex
-system/framework/boot-esecomm.vdex
-system/framework/boot-ext.vdex
-system/framework/boot-framework-adservices.vdex
-system/framework/boot-framework-graphics.vdex
-system/framework/boot-framework.vdex
-system/framework/boot-ims-common.vdex
-system/framework/boot-knoxsdk.vdex
-system/framework/boot-okhttp.vdex
-system/framework/boot-QPerformance.vdex
-system/framework/boot-tcmiface.vdex
-system/framework/boot-telephony-common.vdex
-system/framework/boot-telephony-ext.vdex
-system/framework/boot-UxPerformance.vdex
-system/framework/boot.vdex
-system/framework/boot-voip-common.vdex
-system/priv-app/Accessibility/oat
-system/priv-app/AdaptSound_U/oat
-system/priv-app/AppsEdgePanel_v3.2/oat
-system/priv-app/AppUpdateCenter/oat
-system/priv-app/AREmojiEditor/oat
-system/priv-app/AREmoji/oat
-system/priv-app/AudioMirroring/oat
-system/priv-app/AuthFactorTouchService/oat
-system/priv-app/BadgeProvider_N/oat
-system/priv-app/BCService/oat
-system/priv-app/BeaconManager/oat
-system/priv-app/Bixby/oat
-system/priv-app/BixbyVisionFramework3.5/oat
-system/priv-app/BlueLightFilter/oat
-system/priv-app/CallBGProvider/oat
-system/priv-app/CallContentProvider/oat
-system/priv-app/CIDManager/oat
-system/priv-app/CMHProvider/oat
-system/priv-app/CocktailBarService_v3.2/oat
-system/priv-app/Crane/oat
-system/priv-app/CSC/oat
-system/priv-app/DesktopModeUiService/oat
-system/priv-app/DesktopSystemUI/oat
-system/priv-app/DeviceQualityAgent31/oat
-system/priv-app/DeXonPC/oat
-system/priv-app/DigitalWellbeing/oat
-system/priv-app/DressRoom/oat
-system/priv-app/DynamicLockscreen/oat
-system/priv-app/EarphoneTypeC/oat
-system/priv-app/EasySetup/oat
-system/priv-app/EmergencySOS/oat
-system/priv-app/EnhancedAttestationAgent/oat
-system/priv-app/EsimClient/oat
-system/priv-app/EsimKeyString/oat
-system/priv-app/EuiccService/oat
-system/priv-app/FaceService/oat
-system/priv-app/FactoryTestProvider/oat
-system/priv-app/Finder/oat
-system/priv-app/Fmm/oat
-system/priv-app/GalaxyApps_OPEN/oat
-system/priv-app/GalleryWidget/oat
-system/priv-app/GameHome/oat
-system/priv-app/GameOptimizingService/oat
-system/priv-app/GameTools_Dream/oat
-system/priv-app/GlobalPostProcMgr/oat
-system/priv-app/GooglePackageInstaller/oat
-system/priv-app/HashTagService/oat
-system/priv-app/HdmApk/oat
-system/priv-app/IAFDManagerService/oat
-system/priv-app/ImsLogger/oat
-system/priv-app/IntelligentDynamicFpsService/oat
-system/priv-app/IPService/oat
-system/priv-app/KLMSAgent/oat
-system/priv-app/KmxService/oat
-system/priv-app/knoxanalyticsagent/oat
-system/priv-app/KnoxDesktopLauncher/oat
-system/priv-app/KnoxMposAgent/oat
-system/priv-app/KnoxPushManager/oat
-system/priv-app/KnoxZtFramework/oat
-system/priv-app/KPECore/oat
-system/priv-app/LinkToWindowsService/oat
-system/priv-app/MCFDeviceSync/oat
-system/priv-app/MobileWips/oat
-system/priv-app/ModemServiceMode/oat
-system/priv-app/MultiControl/oat
-system/priv-app/MultiSoundSetting/oat
-system/priv-app/NSDSWebApp/oat
-system/priv-app/NSFusedLocation_v6.0/oat
-system/priv-app/OdaService/oat
-system/priv-app/OmaCP/oat
-system/priv-app/OMCAgent5/oat
-system/priv-app/PeopleStripe/oat
-system/priv-app/PeripheralFramework/oat
-system/priv-app/PhoneErrService/oat
-system/priv-app/PhotoRemasterService/oat
-system/priv-app/Quickboard/oat
-system/priv-app/Routines/oat
-system/priv-app/SamsungBilling/oat
-system/priv-app/SamsungCalendarProvider/oat
-system/priv-app/SamsungCamera/oat
-system/priv-app/SamsungCloudClient/oat
-system/priv-app/SamsungContacts/oat
-system/priv-app/SamsungContactsProvider/oat
-system/priv-app/SamsungDialer/oat
-system/priv-app/SamsungExperienceService/oat
-system/priv-app/SamsungGallery2018/oat
-system/priv-app/SamsungInCallUI/oat
-system/priv-app/SamsungMagnifier3/oat
-system/priv-app/SamsungMessages/oat
-system/priv-app/SamsungMultiConnectivity/oat
-system/priv-app/SamsungSmartSuggestions/oat
-system/priv-app/SamsungVideoPlayer/oat
-system/priv-app/SCameraSDKService/oat
-system/priv-app/SCPMAgent/oat
-system/priv-app/SDMConfig/oat
-system/priv-app/SecAppSeparation/oat
-system/priv-app/SecMyFiles2020/oat
-system/priv-app/SecSetupWizard_Global/oat
-system/priv-app/SecSoundPicker/oat
-system/priv-app/SecTrashProvider/oat
-system/priv-app/SecureFolder/oat
-system/priv-app/SendHelpMessage/oat
-system/priv-app/SettingsBixby/oat
-system/priv-app/ShareLive/oat
-system/priv-app/SmartCallProvider/oat
-system/priv-app/SmartSwitchAssistant/oat
-system/priv-app/SmartThingsKit/oat
-system/priv-app/SmartTouchCall/oat
-system/priv-app/SOAgent7/oat
-system/priv-app/SohService/oat
-system/priv-app/SoundAlive_U/oat
-system/priv-app/SPPPushClient/oat
-system/priv-app/SsuService/oat
-system/priv-app/StickerFaceARAvatar/oat
-system/priv-app/StoryService/oat
-system/priv-app/SumeNNService/oat
-system/priv-app/SVCAgent/oat
-system/priv-app/Tag/oat
-system/priv-app/TalkbackSE/oat
-system/priv-app/TaskEdgePanel_v3.2/oat
-system/priv-app/TelephonyUI/oat
-system/priv-app/ThemeCenter/oat
-system/priv-app/ThemeStore/oat
-system/priv-app/TouchWizHome_2017/oat
-system/priv-app/Upday/oat
-system/priv-app/VolumeMonitorProvider_U/oat
-system/priv-app/YourPhone_P1_5/oat
+system/etc/proca.db
 "
-SYSTEM_EXT_DEBLOAT+="
-framework/oat
-priv-app/com.qualcomm.qti.services.systemhelper/oat
-priv-app/GoogleFeedback/oat
-priv-app/GoogleServicesFramework/oat
-priv-app/SetupWizard/oat
-"
-PRODUCT_DEBLOAT+="
-app/GoogleCalendarSyncAdapter/oat
-app/GoogleLocationHistory/oat
-app/SpeechServicesByGoogle/oat
-app/WebViewGoogle/oat
-priv-app/AndroidAutoStub/oat
-priv-app/AndroidSystemIntelligence/oat
-priv-app/ConfigUpdater/oat
-priv-app/FamilyLinkParentalControls/oat
-priv-app/GmsCore/m/independent/oat
-priv-app/GmsCore/oat
-priv-app/GoogleOneTimeInitializer/oat
-priv-app/GooglePartnerSetup/oat
-priv-app/GoogleRestore/oat
-priv-app/Phonesky/oat
-priv-app/PrivateComputeServices/oat
-priv-app/Turbo/oat
-priv-app/Velvet/oat
+
+# Samsung SIM Unlock
+SYSTEM_DEBLOAT+="
+system/bin/ssud
+system/etc/init/ssu_$(GET_PROP "system" "ro.product.system.name").rc
+system/etc/init/ssu.rc
+system/etc/permissions/privapp-permissions-com.samsung.ssu.xml
+system/etc/sysconfig/samsungsimunlock.xml
+system/lib64/android.security.securekeygeneration-ndk.so
+system/lib64/libssu_keystore2.so
+system/priv-app/SsuService
 "
 
 # Recovery restoration script
@@ -289,83 +38,301 @@ bin/install-recovery.sh
 etc/init/vendor_flash_recovery.rc
 "
 
-# Apps debloat
-PRODUCT_DEBLOAT+="
-app/Chrome
-app/DuoStub
-app/Gmail2
-app/Maps
-app/YouTube
-priv-app/Messages
-priv-app/SearchSelector
-"
+# PDP apps
 SYSTEM_DEBLOAT+="
-system/app/DictDiotekForSec
-system/app/FBAppManager_NS
-system/app/PlayAutoInstallConfig
-system/app/SamsungCalendar
-system/app/SamsungPassAutofill_v1
-system/app/SmartReminder
-system/app/WebManual
-system/etc/init/samsung_pass_authenticator_service.rc
-system/etc/permissions/privapp-permissions-com.microsoft.skydrive.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.app.kfa.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.authfw.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.carkey.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.dkey.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.game.gamehome.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.samsungpass.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.spayfw.xml
-system/etc/permissions/privapp-permissions-com.sec.android.diagmonagent.xml
-system/etc/permissions/privapp-permissions-com.wssyncmldm.xml
-system/etc/permissions/privapp-permissions-de.axelspringer.yana.zeropage.xml
-system/etc/permissions/privapp-permissions-meta.xml
-system/etc/sysconfig/digitalkey.xml
-system/etc/sysconfig/meta-hiddenapi-package-allowlist.xml
-system/etc/sysconfig/preinstalled-packages-com.samsung.android.dkey.xml
-system/etc/sysconfig/preinstalled-packages-com.samsung.android.spayfw.xml
-system/etc/sysconfig/samsungauthframework.xml
-system/etc/sysconfig/samsungpassapp.xml
-system/hidden/SmartTutor
 system/preload
-system/priv-app/AuthFramework
-system/priv-app/DiagMonAgent91
-system/priv-app/DigitalKey
-system/priv-app/FBInstaller_NS
-system/priv-app/FBServices
-system/priv-app/FotaAgent
-system/priv-app/GameHome
-system/priv-app/KnoxAIFrameworkApp
-system/priv-app/OneDrive_Samsung_v3
-system/priv-app/PaymentFramework
-system/priv-app/SamsungCarKeyFw
-system/priv-app/SamsungPass
-system/priv-app/Upday
 "
+
+truncate -s 0 "$WORK_DIR/system/system/etc/vpl_apks_count_list.txt"
 
 # eSIM
-if $SOURCE_IS_ESIM_SUPPORTED; then
-    if ! $TARGET_IS_ESIM_SUPPORTED; then
-        SYSTEM_DEBLOAT+="
-        system/etc/permissions/privapp-permissions-com.samsung.euicc.xml
-        system/etc/sysconfig/preinstalled-packages-com.samsung.euicc.xml
-        system/priv-app/EuiccService
-        "
-    fi
-fi
+[[ "$TARGET_COMMON_SUPPORT_EMBEDDED_SIM" == "false" ]] && SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.samsung.android.app.esimkeystring.xml
+system/etc/permissions/privapp-permissions-com.samsung.euicc.xml
+system/etc/sysconfig/preinstalled-packages-com.samsung.android.app.esimkeystring.xml
+system/etc/sysconfig/preinstalled-packages-com.samsung.euicc.xml
+system/priv-app/EsimKeyString
+system/priv-app/EuiccService
+"
 
-# fabric_crypto
-if [[ "$TARGET_API_LEVEL" -lt 34 ]]; then
-    SYSTEM_DEBLOAT+="
-    system/bin/fabric_crypto
-    system/etc/init/fabric_crypto.rc
-    system/etc/permissions/FabricCryptoLib.xml
-    system/etc/permissions/privapp-permissions-com.samsung.android.kmxservice.xml
-    system/etc/vintf/manifest/fabric_crypto_manifest.xml
-    system/framework/FabricCryptoLib.jar
-    system/lib64/com.samsung.security.fabric.cryptod-V1-cpp.so
-    system/lib64/vendor.samsung.hardware.security.fkeymaster-V1-cpp.so
-    system/lib64/vendor.samsung.hardware.security.fkeymaster-V1-ndk.so
-    system/priv-app/KmxService
-    "
-fi
+# SmartFPSAdjuster
+[ "$TARGET_LCD_CONFIG_HFR_MODE" -lt "1" ] && SYSTEM_DEBLOAT+="
+system/priv-app/IntelligentDynamicFpsService
+"
+
+# Application recommendations
+SYSTEM_DEBLOAT+="
+system/app/MAPSAgent
+"
+
+# AppUpdateCenter
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.samsung.android.app.updatecenter.xml
+system/priv-app/AppUpdateCenter
+"
+
+# BCService
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.sec.bcservice.xml
+system/priv-app/BCService
+"
+
+# Gaming Hub
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.samsung.android.game.gamehome.xml
+system/priv-app/GameHome
+"
+
+ADD_TO_WORK_DIR "pa2qxxx" "system" \
+    "system/etc/permissions/signature-permissions-com.samsung.android.game.gamehome.xml" \
+    0 0 644 "u:object_r:system_file:s0"
+
+# Gemini shortcut
+PRODUCT_DEBLOAT+="
+app/BardShell
+"
+
+# Gmail
+PRODUCT_DEBLOAT+="
+app/Gmail2
+"
+
+# Google Assistant shortcut
+PRODUCT_DEBLOAT+="
+app/AssistantShell
+"
+
+# Google Chrome
+PRODUCT_DEBLOAT+="
+app/Chrome
+"
+
+# Google Duo
+PRODUCT_DEBLOAT+="
+app/DuoStub
+"
+
+# Google Maps
+PRODUCT_DEBLOAT+="
+app/Maps
+"
+
+# Google PAI (Play Autoinstall)
+SYSTEM_DEBLOAT+="
+system/app/PlayAutoInstallConfig
+"
+
+# HwModuleTest
+SYSTEM_DEBLOAT+="
+system/app/Cameralyzer
+system/app/FactoryAirCommandManager
+system/app/FactoryCameraFB
+system/app/HMT
+system/app/WlanTest
+system/etc/default-permissions/default-permissions-com.sec.factory.cameralyzer.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.providers.factory.xml
+system/etc/permissions/privapp-permissions-com.sec.facatfunction.xml
+system/priv-app/FacAtFunction
+system/priv-app/FactoryTestProvider
+"
+
+# Language packs
+SYSTEM_DEBLOAT+="$(find "$WORK_DIR/system" -type d -name "*TTSVoice*" | sed "s|$WORK_DIR/system/||g")"
+
+# LED Cover Service
+[ "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_NFC_LED_COVER_LEVEL")" -lt "30" ] && SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.sec.android.cover.ledcover.xml
+system/priv-app/LedCoverService
+"
+
+# Link to Windows
+# Replace full apk with stub apk to save space
+SYSTEM_DEBLOAT+="
+system/priv-app/YourPhone_P1_5
+"
+
+ADD_TO_WORK_DIR "gta9pxxx" "system" "system/priv-app/YourPhone_Stub/YourPhone_Stub.apk" 0 0 644 "u:object_r:system_file:s0"
+
+# Live Transcribe
+SYSTEM_DEBLOAT+="
+system/app/LiveTranscribe
+system/etc/sysconfig/feature-a11y-preload.xml
+"
+
+# Meta
+SYSTEM_DEBLOAT+="
+system/app/FBAppManager_NS
+system/etc/default-permissions/default-permissions-meta.xml
+system/etc/permissions/privapp-permissions-meta.xml
+system/etc/sysconfig/meta-hiddenapi-package-allowlist.xml
+system/priv-app/FBInstaller_NS
+system/priv-app/FBServices
+"
+
+# Microsoft OneDrive
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.microsoft.skydrive.xml
+system/priv-app/OneDrive_Samsung_v3
+"
+
+# My Galaxy
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.mygalaxy.service.xml
+system/etc/sysconfig/preinstalled-packages-com.mygalaxy.service.xml
+system/priv-app/MyGalaxyService
+"
+
+# Samsung Analytics
+SYSTEM_DEBLOAT+="
+system/app/DsmsAPK
+system/etc/permissions/privapp-permissions-com.samsung.android.dqagent.xml
+system/etc/permissions/privapp-permissions-com.sec.android.diagmonagent.xml
+system/etc/permissions/privapp-permissions-com.sec.android.soagent.xml
+system/priv-app/DeviceQualityAgent36
+system/priv-app/DiagMonAgent95
+system/priv-app/SOAgent76
+"
+
+SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_CONTEXTSERVICE_ENABLE_SURVEY_MODE" --delete
+
+# Samsung AR Emoji
+SYSTEM_DEBLOAT+="
+system/etc/default-permissions/default-permissions-com.sec.android.mimage.avatarstickers.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.aremojieditor.xml
+system/etc/permissions/privapp-permissions-com.sec.android.mimage.avatarstickers.xml
+system/etc/permissions/signature-permissions-com.sec.android.mimage.avatarstickers.xml
+system/priv-app/AREmojiEditor
+system/priv-app/AvatarEmojiSticker
+"
+
+# Samsung Calendar
+SYSTEM_DEBLOAT+="
+system/app/SamsungCalendar
+"
+
+# Samsung Clock
+SYSTEM_DEBLOAT+="
+system/app/ClockPackage
+"
+
+# Samsung Free
+SYSTEM_DEBLOAT+="
+system/app/MinusOnePage
+"
+
+# Samsung Language Core
+SYSTEM_DEBLOAT+="
+system/etc/permissions/signature-permissions-com.samsung.android.offline.languagemodel.xml
+system/priv-app/OfflineLanguageModel_stub
+"
+
+# Samsung Messages
+SYSTEM_DEBLOAT+="
+system/etc/default-permissions/default-permissions-com.samsung.android.messaging.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.messaging.xml
+system/priv-app/SamsungMessages
+"
+
+# Samsung Pass
+SYSTEM_DEBLOAT+="
+system/app/SamsungPassAutofill_v1
+system/etc/init/samsung_pass_authenticator_service.rc
+system/etc/permissions/authfw.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.authfw.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.samsungpass.xml
+system/etc/permissions/signature-permissions-com.samsung.android.samsungpass.xml
+system/etc/permissions/signature-permissions-com.samsung.android.samsungpassautofill.xml
+system/etc/sysconfig/samsungauthframework.xml
+system/etc/sysconfig/samsungpassapp.xml
+system/priv-app/AuthFramework
+system/priv-app/SamsungPass
+"
+
+# Samsung Reminder
+SYSTEM_DEBLOAT+="
+system/app/SmartReminder
+"
+
+# Samsung Visit In
+SYSTEM_DEBLOAT+="
+system/etc/permissions/com.samsung.feature.ipsgeofence.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.ipsgeofence.xml
+system/priv-app/IpsGeofence
+"
+
+# Samsung Wallet
+SYSTEM_DEBLOAT+="
+system/etc/init/digitalkey_init_ble_tss2.rc
+system/etc/permissions/org.carconnectivity.android.digitalkey.rangingintent.xml
+system/etc/permissions/org.carconnectivity.android.digitalkey.secureelement.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.carkey.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.dkey.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.spayfw.xml
+system/etc/permissions/signature-permissions-com.samsung.android.spay.xml
+system/etc/permissions/signature-permissions-com.samsung.android.spayfw.xml
+system/etc/sysconfig/digitalkey.xml
+system/etc/sysconfig/preinstalled-packages-com.samsung.android.dkey.xml
+system/etc/sysconfig/preinstalled-packages-com.samsung.android.spayfw.xml
+system/priv-app/DigitalKey
+system/priv-app/PaymentFramework
+system/priv-app/SamsungCarKeyFw
+"
+SYSTEM_EXT_DEBLOAT+="
+framework/org.carconnectivity.android.digitalkey.rangingintent.jar
+framework/org.carconnectivity.android.digitalkey.secureelement.jar
+"
+
+# Search engine selector
+PRODUCT_DEBLOAT+="
+overlay/GmsConfigOverlaySearchSelector.apk
+priv-app/SearchSelector
+"
+
+# SettingsHelper
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.samsung.android.settingshelper.xml
+system/etc/sysconfig/settingshelper.xml
+system/priv-app/SHClient
+"
+
+# Smart Touch Call
+SYSTEM_DEBLOAT+="
+system/etc/default-permissions/default-permissions-com.samsung.android.visualars.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.visualars.xml
+system/priv-app/SmartTouchCall
+"
+
+# Smart Tutor
+SYSTEM_DEBLOAT+="
+system/hidden/SmartTutor
+"
+
+SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_CONFIG_SMARTTUTOR_PACKAGES_PATH" --delete
+
+# Software update
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.wssyncmldm.xml
+system/priv-app/FotaAgent
+"
+
+# SVC Agent
+SYSTEM_DEBLOAT+="
+system/etc/permissions/privapp-permissions-com.samsung.android.svcagent.xml
+system/priv-app/SVCAgent
+"
+
+# SVoiceIME
+SYSTEM_DEBLOAT+="
+system/priv-app/SVoiceIME
+"
+
+# Voice Access
+SYSTEM_DEBLOAT+="
+system/app/VoiceAccess
+system/etc/sysconfig/feature-a11y-preload-voacc.xml
+"
+
+# YouTube
+PRODUCT_DEBLOAT+="
+app/YouTube
+"

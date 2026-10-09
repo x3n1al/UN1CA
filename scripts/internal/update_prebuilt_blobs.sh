@@ -1,183 +1,111 @@
 #!/usr/bin/env bash
-#
-# Copyright (C) 2023 BlackMesa123
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-set -Ee
+# Copyright (c) 2025 Salvo Giangreco
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # [
-GET_LATEST_FIRMWARE()
-{
-    curl -s --retry 5 --retry-delay 5 "https://fota-cloud-dn.ospserver.net/firmware/$REGION/$MODEL/version.xml" \
-        | grep latest | sed 's/^[^>]*>//' | sed 's/<.*//'
-}
-#]
+source "$SRC_DIR/scripts/utils/firmware_utils.sh" || exit 1
 
-if [ "$#" != 1 ]; then
-    echo "Usage: update_prebuilt_blobs <path>"
+DEVICE=""
+MODEL=""
+CSC=""
+IMEI=""
+LATEST_FIRMWARE=""
+
+UPDATE_BLOBS()
+{
+    local BLOBS
+    local PREBUILTS_DIR="$SRC_DIR/prebuilts/samsung/$DEVICE"
+    local FILE_PATH
+
+    if [ -d "$PREBUILTS_DIR/system" ]; then
+        BLOBS+="$(find "$PREBUILTS_DIR/system" ! -type d)"
+        BLOBS="${BLOBS//$PREBUILTS_DIR/system}"
+    fi
+    if [ -d "$PREBUILTS_DIR/product" ]; then
+        [ "$BLOBS" ] && BLOBS+=$'\n'
+        BLOBS+="$(find "$PREBUILTS_DIR/product" ! -type d)"
+        BLOBS="${BLOBS//$PREBUILTS_DIR\//}"
+    fi
+    if [ -d "$PREBUILTS_DIR/vendor" ]; then
+        [ "$BLOBS" ] && BLOBS+=$'\n'
+        BLOBS+="$(find "$PREBUILTS_DIR/vendor" ! -type d)"
+        BLOBS="${BLOBS//$PREBUILTS_DIR\//}"
+    fi
+    if [ -d "$PREBUILTS_DIR/system_ext" ]; then
+        [ "$BLOBS" ] && BLOBS+=$'\n'
+        BLOBS+="$(find "$PREBUILTS_DIR/system_ext" ! -type d)"
+        BLOBS="${BLOBS//$PREBUILTS_DIR\//}"
+    fi
+    BLOBS="$(LC_ALL=C sort <<< "$BLOBS")"
+
+    for i in $BLOBS; do
+        if [[ "$i" == *.[0-9][0-9] ]]; then
+            [[ "$i" == *".00" ]] || continue
+            i="${i%.*}"
+        fi
+        FILE_PATH="$PREBUILTS_DIR/${i//system\/system\//system/}"
+
+        if [ ! -f "$FW_DIR/${MODEL}_${CSC}/$i" ]; then
+            LOGE "File not found: ${FW_DIR//$SRC_DIR\//}/${MODEL}_${CSC}/$i"
+            exit 1
+        fi
+
+        LOG "- Updating prebuilts/samsung/$DEVICE/$i"
+
+        if [ ! -L "$FW_DIR/${MODEL}_${CSC}/$i" ] && \
+                [ "$(wc -c "$FW_DIR/${MODEL}_${CSC}/$i" | cut -d " " -f 1)" -gt "52428800" ]; then
+            EVAL "rm \"$FILE_PATH.\"*" || exit 1
+            EVAL "split -d -b 52428800 \"$FW_DIR/${MODEL}_${CSC}/$i\" \"$FILE_PATH.\"" || exit 1
+        else
+            EVAL "cp -a \"$FW_DIR/${MODEL}_${CSC}/$i\" \"$FILE_PATH\"" || exit 1
+        fi
+    done
+
+    EVAL "cp -a \"$FW_DIR/${MODEL}_${CSC}/.extracted\" \"$PREBUILTS_DIR/.current\"" || exit 1
+}
+# ]
+
+if [[ "$#" != "2" ]]; then
+    echo "Usage: update_prebuilt_blobs <device> <firmware>" >&2
     exit 1
 fi
 
-case "$1" in
-    "unica/packages/china")
-        MODULE="$1"
-        FW="SM-S9110/CHC/RFCW2198XNF"
-        BLOBS="$(find "$SRC_DIR/unica/packages/china/system" -type f | sed "s.$SRC_DIR/unica/packages/china.system.")"
-        ;;
-    "unica/packages/fod/essi")
-        MODULE="$1"
-        FW="SM-S901B/BTE/350330051234562"
-        BLOBS="$(find "$SRC_DIR/unica/packages/fod/essi/system" -type f | sed "s.$SRC_DIR/unica/packages/fod/essi.system.")"
-        ;;
-    "unica/packages/fod/qssi")
-        MODULE="$1"
-        FW="SM-X716B/EUX/353439961234567"
-        BLOBS="$(find "$SRC_DIR/unica/packages/fod/qssi/system" -type f \
-            -not -path "*/priv-app/*" | sed "s.$SRC_DIR/unica/packages/fod/qssi.system.")"
-        ;;
-    "unica/packages/knox/essi/none")
-        MODULE="$1"
-        FW="SM-A546B/BTE/350756481234568"
-        BLOBS="$(find "$SRC_DIR/unica/packages/knox/essi/none/system" -type f | sed "s.$SRC_DIR/unica/packages/knox/essi/none.system.")"
-        ;;
-    "unica/packages/knox/essi/sdp")
-        MODULE="$1"
-        FW="SM-A536B/BTE/355490891234563"
-        BLOBS="$(find "$SRC_DIR/unica/packages/knox/essi/sdp/system" -type f | sed "s.$SRC_DIR/unica/packages/knox/essi/sdp.system.")"
-        ;;
-    "unica/packages/knox/qssi/ddar_sdp")
-        MODULE="$1"
-        FW="SM-G990B/EUX/353718681234563"
-        BLOBS="$(find "$SRC_DIR/unica/packages/knox/qssi/ddar_sdp/system" -type f | sed "s.$SRC_DIR/unica/packages/knox/qssi/ddar_sdp.system.")"
-        ;;
-    "unica/packages/knox/qssi/none")
-        MODULE="$1"
-        FW="SM-A736B/INS/352828291234563"
-        BLOBS="$(find "$SRC_DIR/unica/packages/knox/qssi/none/system" -type f | sed "s.$SRC_DIR/unica/packages/knox/qssi/none.system.")"
-        ;;
-    "unica/packages/knox/qssi/sdp")
-        MODULE="$1"
-        FW="SM-A528B/BTU/352599501234566"
-        BLOBS="$(find "$SRC_DIR/unica/packages/knox/qssi/sdp/system" -type f | sed "s.$SRC_DIR/unica/packages/knox/qssi/sdp.system.")"
-        ;;
-    "unica/packages/mass_cam")
-        MODULE="$1"
-        FW="SM-A736B/INS/352828291234563"
-        BLOBS="$(find "$SRC_DIR/unica/packages/mass_cam/system" -type f | sed "s.$SRC_DIR/unica/packages/mass_cam.system.")"
-        ;;
-    "unica/packages/vndk/30")
-        MODULE="$1"
-        FW="SM-A736B/INS/352828291234563"
-        BLOBS="system/system/system_ext/apex/com.android.vndk.v30.apex"
-        ;;
-    "unica/packages/vndk/31")
-        MODULE="$1"
-        FW="SM-S901B/BTE/350330051234562"
-        BLOBS="system/system/system_ext/apex/com.android.vndk.v31.apex"
-        ;;
-    "unica/packages/vndk/32")
-        MODULE="$1"
-        FW="SM-F936B/INS/352334701234566"
-        BLOBS="system_ext/apex/com.android.vndk.v32.apex"
-        ;;
-    "unica/packages/vndk/33")
-        MODULE="$1"
-        FW="SM-S911B/INS/352404911234563"
-        BLOBS="system_ext/apex/com.android.vndk.v33.apex"
-        ;;
-    "target/a54x/patches/vendor")
-        MODULE="$1"
-        FW="SM-A546B/BTE/350756481234568"
-        BLOBS="$(find "$SRC_DIR/target/a54x/patches/vendor/vendor" -type f \
-            -not -path "*/etc/*" | sed "s.$SRC_DIR/target/a54x/patches/vendor/..")"
-        ;;
-    "target/a71/patches/stock_blobs")
-        MODULE="$1"
-        FW="SM-A525F/SER/352938771234569"
-        BLOBS="$(find "$SRC_DIR/target/a71/patches/stock_blobs/product" -type f \
-            | sed "s.$SRC_DIR/target/a71/patches/stock_blobs/product..")"
-        BLOBS+="$(find "$SRC_DIR/target/a71/patches/stock_blobs/system" -type f -printf "\n%p" \
-            -not -path "*/etc/*" | sed "s.$SRC_DIR/target/a71/patches/stock_blobs.system.")"
-        BLOBS+="$(find "$SRC_DIR/target/a71/patches/stock_blobs/system_ext" -type f -printf "\n%p" \
-            | sed "s.$SRC_DIR/target/a71/patches/stock_blobs.system/system.")"
-        BLOBS+="$(find "$SRC_DIR/target/a71/patches/stock_blobs/vendor" -type f -printf "\n%p" \
-            | sed "s.$SRC_DIR/target/a71/patches/stock_blobs/vendor..")"
-        ;;
-    "target/m52xq/patches/stock_blobs")
-        MODULE="$1"
-        FW="SM-A528B/BTU/352599501234566"
-        BLOBS="$(find "$SRC_DIR/target/m52xq/patches/stock_blobs/product" -type f \
-            | sed "s.$SRC_DIR/target/m52xq/patches/stock_blobs/product..")"
-        BLOBS+="$(find "$SRC_DIR/target/m52xq/patches/stock_blobs/system" -type f -printf "\n%p" \
-            -not -path "*/etc/*" | sed "s.$SRC_DIR/target/m52xq/patches/stock_blobs.system.")"
-        ;;
-    "target/m52xq/patches/vendor")
-        MODULE="$1"
-        FW="SM-A528B/BTU/352599501234566"
-        BLOBS="$(find "$SRC_DIR/target/m52xq/patches/vendor/vendor" -type f \
-            -not -path "*/firmware/*" ! -name "*wifi_firmware.rc" | sed "s.$SRC_DIR/target/m52xq/patches/vendor/..")"
-        ;;
-    *)
-        echo "Unsupported path: $1"
-        exit 1
-        ;;
-esac
+DEVICE="$1"
+shift
+if [ ! -d "$SRC_DIR/prebuilts/samsung/$DEVICE" ]; then
+    LOGE "Folder not found: prebuilts/samsung/$DEVICE"
+    exit 1
+fi
 
-MODEL=$(echo -n "$FW" | cut -d "/" -f 1)
-REGION=$(echo -n "$FW" | cut -d "/" -f 2)
+PARSE_FIRMWARE_STRING "$1" || exit 1
 
-[ -z "$(GET_LATEST_FIRMWARE)" ] && exit 1
-if [[ "$(GET_LATEST_FIRMWARE)" == "$(cat "$SRC_DIR/$MODULE/.current")" ]]; then
-    echo "Nothing to do."
+LATEST_FIRMWARE="$(GET_LATEST_FIRMWARE "$MODEL" "$CSC")"
+if [ ! "$LATEST_FIRMWARE" ]; then
+    LOGE "Latest available firmware could not be fetched"
+    exit 1
+fi
+
+LOG_STEP_IN true "Starting update_prebuilt_blobs for prebuilts/samsung/$DEVICE"
+LOG "- Current firmware: $(cat "$SRC_DIR/prebuilts/samsung/$DEVICE/.current" 2> /dev/null)"
+LOG "- Latest available firmware: $LATEST_FIRMWARE"
+
+if [[ "$LATEST_FIRMWARE" == "$(cat "$SRC_DIR/prebuilts/samsung/$DEVICE/.current" 2> /dev/null)" ]]; then
+    LOG_STEP_IN
+    LOG "\033[0;33m! Nothing to do\033[0m"
     exit 0
 fi
 
-echo -e "Updating $MODULE blobs\n"
+LOG_STEP_OUT
 
-export SOURCE_FIRMWARE="$FW"
-export TARGET_FIRMWARE="$FW"
-bash "$SRC_DIR/scripts/download_fw.sh"
-bash "$SRC_DIR/scripts/extract_fw.sh"
+LOG_STEP_IN true "Downloading firmware"
+"$SRC_DIR/scripts/download_fw.sh" --ignore-source --ignore-target "$MODEL/$CSC/${IMEI:=$SERIAL_NO}" || exit 1
+LOG_STEP_OUT
 
-for i in $BLOBS; do
-    if [[ "$i" == *"system_ext/apex/com.android.vndk.v"* ]]; then
-        if [[ "$i" == *"com.android.vndk.v30.apex" ]]; then
-            rm -rf "$SRC_DIR/unica/packages/vndk/30/com.android.vndk.v30.apex."*
-            split -db 52428800 "$FW_DIR/${MODEL}_${REGION}/$i" \
-                "$SRC_DIR/unica/packages/vndk/30/com.android.vndk.v30.apex."
-        else
-            cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/$i" \
-                "$SRC_DIR/$MODULE/$(basename "$i")"
-        fi
+LOG_STEP_IN true "Extracting firmware"
+"$SRC_DIR/scripts/extract_fw.sh" --ignore-source --ignore-target "$MODEL/$CSC/${IMEI:=$SERIAL_NO}" || exit 1
+LOG_STEP_OUT
 
-        continue
-    fi
-
-    if [[ "$i" == "system/system/system_ext/"* ]]; then
-        cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/$i" \
-            "$SRC_DIR/$MODULE/$(echo "$i" | sed "s.system/system/system_ext/.system_ext/.")"
-    elif [[ "$i" == "system/system/"* ]]; then
-        cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/$i" \
-            "$SRC_DIR/$MODULE/$(echo "$i" | sed "s.system/system/.system/.")"
-    elif [[ "$i" == "product/"* ]] || [[ "$i" == "vendor/"* ]]; then
-        cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/$i" \
-            "$SRC_DIR/$MODULE/$i"
-    fi
-done
-
-cp --preserve=all "$ODIN_DIR/${MODEL}_${REGION}/.downloaded" "$SRC_DIR/$MODULE/.current"
+LOG_STEP_IN true "Updating blobs"
+UPDATE_BLOBS || exit 1
 
 exit 0

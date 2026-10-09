@@ -2,50 +2,87 @@
   <img loading="lazy" src="readme-res/banner.png"/>
 </h1>
 <p align="center">
-  <a href="https://github.com/BlackMesa123/UN1CA/blob/fourteen/LICENSE"><img loading="lazy" src="https://img.shields.io/github/license/BlackMesa123/UN1CA?style=for-the-badge&logo=github"/></a>
-  <a href="https://github.com/BlackMesa123/UN1CA/commits/fourteen"><img loading="lazy" src="https://img.shields.io/github/last-commit/BlackMesa123/UN1CA/fourteen?style=for-the-badge"/></a>
-  <a href="https://github.com/BlackMesa123/UN1CA/stargazers"><img loading="lazy" src="https://img.shields.io/github/stars/BlackMesa123/UN1CA?style=for-the-badge"/></a>
-  <a href="https://github.com/BlackMesa123/UN1CA/graphs/contributors"><img loading="lazy" src="https://img.shields.io/github/contributors/BlackMesa123/UN1CA?style=for-the-badge"/></a>
-  <a href="https://github.com/BlackMesa123/UN1CA/actions/workflows/build.yml"><img loading="lazy" src="https://img.shields.io/github/actions/workflow/status/BlackMesa123/UN1CA/build.yml?style=for-the-badge"/></a>
+  <a href="https://github.com/salvogiangri/UN1CA/blob/sixteen/LICENSE"><img loading="lazy" src="https://img.shields.io/github/license/salvogiangri/UN1CA?style=for-the-badge&logo=github"/></a>
+  <a href="https://github.com/salvogiangri/UN1CA/commits/sixteen"><img loading="lazy" src="https://img.shields.io/github/last-commit/salvogiangri/UN1CA/sixteen?style=for-the-badge"/></a>
+  <a href="https://github.com/salvogiangri/UN1CA/stargazers"><img loading="lazy" src="https://img.shields.io/github/stars/salvogiangri/UN1CA?style=for-the-badge"/></a>
+  <a href="https://github.com/salvogiangri/UN1CA/actions/workflows/ci.yml"><img loading="lazy" src="https://img.shields.io/github/actions/workflow/status/salvogiangri/UN1CA/ci.yml?style=for-the-badge"/></a>
+  <a href="https://crowdin.com/project/UN1CA"><img loading="lazy" src="https://img.shields.io/badge/Crowdin-263238?style=for-the-badge&logo=crowdin"/></a>
 </p>
 <p align="center">UN1CA <i>(/ˈu.ni.ka/)</i> is a work-in-progress custom firmware for Samsung Galaxy devices.</p>
 
 <p align="center">
-  <a href="https://unica.mesalabs.io">🌐 Website</a>
+  <a href="https://github.com/salvogiangri/UN1CA/discussions">🚀 Discussions</a>
   •
   <a href="https://t.me/unicarom">💬 Telegram</a>
 </p>
 
-# Quick links
-- [Supported devices](https://unica.mesalabs.io/devices)
-- [Installation instructions](https://unica.mesalabs.io/guide)
-- [Build UN1CA](https://unica.mesalabs.io/expert/build/)
-
 # What is UN1CA?
-UN1CA is an open source project which allows you to create a custom One UI-based ROM by automatically downloading/extracting the firmware, applying the required patches and generating a flashable zip/tar package.
-It also includes additional features and tweaks to ensure the best possible experience out of the box.
+UN1CA is a work-in-progress custom firmware for Samsung Galaxy devices, designed to provide a refined, optimized and more rich One UI experience.
+It is based on the latest and greatest iteration of Samsung's UX and it integrates numerous improvements, optimizations and exclusive features.
+
+The UN1CA build system automatically builds the required tools, downloads and extracts firmware components, applies the required patches and generates a flashable zip for the target device.
+
+The goal is to deliver a fast, smooth and modern UX while offering additional tools, modifications and system‑level enhancements tailored for power users.
+
+Any form of contribution, suggestions, bug report or feature request for the project will be welcome.
 
 # Features
-- Based on the latest high-end Samsung devices firmware:
-  - Galaxy S23 for Qualcomm devices
-  - Galaxy S23 FE for Exynos devices
+### Core features:
+- Based on the latest stable Galaxy S22 firmware
+- EROFS powered
+- Galaxy S25 wallpapers/sounds included
+- Galaxy AI support
+  - Audio eraser
+  - Browsing assist
+  - Call assist
+  - Drawing assist
+  - Interpreter
+  - Note assist
+  - Now brief
+  - Photo assist
+  - Semantic search
+  - Transcript assist
+  - Writing assist
 - High end animations
-- AOD clock transition support
 - Native/live blur support
+- AOD clock transition support
+- Adaptive color tone support
+- Adaptive refresh rate support
+- Extra brightness support
 - Picture remaster support
 - Object, shadow and reflection eraser support
 - Image clipper support
-- Samsung DeX support
+- Multi user support
+- Samsung DeX support*
 - Camera privacy toggle support
-- Slight debloat
-- Enabled ADB at boot
-- Play Integrity Fix included **(root required)**
-- [BluetoothLibraryPatcher](https://github.com/3arthur6/BluetoothLibraryPatcher) included
-- [KnoxPatch](https://github.com/BlackMesa123/KnoxPatch) implemented in system frameworks
-- China Device Care app included
-- [Patched GoodLock](https://github.com/corsicanu/goodlock_dump) app included
-- Extra mods (Allow secure screenshot, FPS Unlock, Allow app downgrade)
-- Extra CSC features (Call recording, Hiya, Network speed in status bar, Quick switch to Secure Folder)
+- Debloated from useless system services/additional apps
+- Dual Messenger available for all apps
+- Custom FlipFont fonts support
+- Outdoor mode support
+- Auto PIN confirm with 4 digits
+- [BluetoothLibraryPatcher](https://github.com/3arthur6/BluetoothLibraryPatcher) integrated
+- [KnoxPatch](https://github.com/salvogiangri/KnoxPatch) integrated
+- Extra CSC features enabled (Call recording, Hiya, Network speed in status bar, AltZLife)
+
+\* DeX via HDMI not available for devices without USB-C DP support
+
+### UN1CA-exclusive features:
+- Integrated OTA updates app
+- Native/live blur toggle
+- One UI Home animations option
+- Vulkan renderer toggle
+- Key attestation spoof ([TrickyStore](https://github.com/5ec1cff/TrickyStore)) options*
+- Play Integrity Fix integrated
+- Ability to hide installed apps ([Hide My Applist](https://github.com/Dr-TSNG/Hide-My-Applist))
+- Ability to hide developer options
+- Allow app downgrade toggle
+- Allow installing apps with old targetSdk toggle
+- Allow secure screenshot toggle
+- Screenshot/screen recording detection toggle
+- Unlimited backup storage on Google Photos
+- Games FPS unlock toggle
+
+\* Requires a valid keybox
 
 # Licensing
 This project is licensed under the terms of the [GNU General Public License v3.0](LICENSE). External dependencies might be distributed under a different license, such as:
@@ -55,15 +92,17 @@ This project is licensed under the terms of the [GNU General Public License v3.0
 - [img2sdat](https://github.com/xpirt/img2sdat), licensed under the [MIT License](https://github.com/xpirt/img2sdat/blob/master/LICENSE)
 - [platform_build](https://android.googlesource.com/platform/build/) (ext4_utils, f2fs_utils, signapk), licensed under the [Apache License 2.0](https://source.android.com/docs/setup/about/licenses)
 
+# Contributors
+<a href="https://github.com/salvogiangri/UN1CA/graphs/contributors"><img loading="lazy" src="https://contrib.rocks/image?repo=salvogiangri/UN1CA"/></a>
+
 # Credits
-A big thanks goes to the following for their invaluable contributions in no particular order:
+A special thanks goes to the following for their invaluable contributions in no particular order:
 - **[ShaDisNX255](https://github.com/ShaDisNX255)** for his help, time and for his [NcX ROM](https://github.com/ShaDisNX255/NcX_Stock) which inspired this project
 - **[DavidArsene](https://github.com/DavidArsene)** for his help and time
 - **[paulowesll](https://github.com/paulowesll)** for his help and support
 - **[Simon1511](https://github.com/Simon1511)** for his support and some of the device-specific patches
 - **[ananjaser1211](https://github.com/ananjaser1211)** for troubleshooting and his time
-- **[iDrinkCoffee](https://github.com/iDrinkCoffee-TG)** and **[RisenID](https://github.com/RisenID)** for documentation revisioning
-- *All the UN1CA project contributors and testers ❤️*
-
-# Stargazers over time
-[![Stargazers over time](https://starchart.cc/BlackMesa123/UN1CA.svg)](https://starchart.cc/BlackMesa123/UN1CA)
+- **[Fede2782](https://github.com/Fede2782)** for his contributions and help with Exynos/MTK support
+- **[iDrinkCoffee](https://github.com/iDrinkCoffee-TG)** and **[RisenID](https://github.com/RisenID)** for their support
+- **[LineageOS Team](https://www.lineageos.org/)** for their original [OTA updater implementation](https://github.com/LineageOS/android_packages_apps_Updater)
+- *All the UN1CA project forks, contributors, testers and users ❤️*

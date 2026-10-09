@@ -1,107 +1,64 @@
 #!/usr/bin/env bash
-#
-# Copyright (C) 2023 BlackMesa123
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# Copyright (c) 2023 Salvo Giangreco
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-set -eu
+# [
+source "$SRC_DIR/scripts/utils/log_utils.sh"
 
-ALL=false
-ODIN=false
-FW=false
-APKTOOL=false
-WORK=false
-TOOLS=false
+PRINT_USAGE()
+{
+    echo "Usage: cleanup <type> (<type>...)" >&2
+    echo " - all ($OUT_DIR)" >&2
+    echo " - odin ($ODIN_DIR)" >&2
+    echo " - fw ($FW_DIR)" >&2
+    echo " - work_dir ($WORK_DIR)" >&2
+    echo " - logs ($OUT_DIR/**.log)" >&2
+    echo " - tools ($TOOLS_DIR)" >&2
+}
+# ]
 
 if [ "$#" == 0 ]; then
-    echo "Usage: cleanup <type>"
+    PRINT_USAGE
     exit 1
-else
-    while [ "$#" != 0 ]; do
-        case "$1" in
-            "all")
-                ALL=true
-                break
-                ;;
-            "odin")
-                ODIN=true
-                ;;
-            "fw")
-                FW=true
-                ;;
-            "apktool")
-                APKTOOL=true
-                ;;
-            "work_dir")
-                WORK=true
-                ;;
-            "tools")
-                TOOLS=true
-                ;;
-            *)
-                echo "\"$1\" is not valid type."
-                echo "Available options (multiple can be accepted):"
-                echo "all"
-                echo "odin"
-                echo "fw"
-                echo "apktool"
-                echo "work_dir"
-                echo "tools"
-                exit 1
+fi
+
+while [ "$#" != 0 ]; do
+    case "$1" in
+        "all")
+            LOG "- Cleaning everything..."
+            rm -rf "$OUT_DIR"
+            break
             ;;
-        esac
+        "odin")
+            LOG "- Cleaning Odin firmwares dir..."
+            rm -rf "$ODIN_DIR"
+            ;;
+        "fw")
+            LOG "- Cleaning extracted firmwares dir..."
+            rm -rf "$FW_DIR"
+            ;;
+        "work_dir")
+            LOG "- Cleaning ROM work dir..."
+            rm -rf "$(dirname "$WORK_DIR")"
+            mkdir -p "$(dirname "$WORK_DIR")"
+            ;;
+        "logs")
+            LOG "- Cleaning log files..."
+            find "$OUT_DIR" -type f -name "*.log" -delete
+            ;;
+        "tools")
+            LOG "- Cleaning dependencies dir..."
+            rm -rf "$TOOLS_DIR"
+            git submodule foreach --recursive "git clean -f -d -x" &> /dev/null
+            ;;
+        *)
+            LOGE "\"$1\" is not valid."
+            PRINT_USAGE
+            exit 1
+        ;;
+    esac
 
-        shift
-    done
-fi
-
-if $ALL; then
-    echo "- Cleaning everything..."
-    rm -rf "$OUT_DIR"
-    exit 0
-fi
-
-if $ODIN; then
-    echo "- Cleaning Odin firmwares dir..."
-    rm -rf "$ODIN_DIR"
-fi
-
-if $FW; then
-    echo "- Cleaning extracted firmwares dir..."
-    rm -rf "$FW_DIR"
-fi
-
-if $APKTOOL; then
-    echo "- Cleaning decompiled apks/jars dir..."
-    rm -rf "$APKTOOL_DIR"
-fi
-
-if $WORK; then
-    echo "- Cleaning ROM work dir..."
-    rm -rf "$WORK_DIR"
-fi
-
-if $TOOLS; then
-    echo "- Cleaning dependencies dir..."
-    rm -rf "$TOOLS_DIR"
-    {
-        cd "$SRC_DIR/external/android-tools" && git clean -f -d -x && cd -
-        cd "$SRC_DIR/external/apktool" && git clean -f -d -x && cd -
-        cd "$SRC_DIR/external/erofs-utils" && git clean -f -d -x && cd -
-        cd "$SRC_DIR/external/samfirm.js" && git clean -f -d -x && cd -
-    } > /dev/null
-fi
+    shift
+done
 
 exit 0

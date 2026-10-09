@@ -1,112 +1,124 @@
-SKIPUNZIP=1
-
-REMOVE_FROM_WORK_DIR()
+# [
+MATCH_TARGET_AUDIO_FX_LIB()
 {
-    local FILE_PATH="$1"
+    local WRAPPER="$1"
+    local PATTERN="$2"
+    local SOURCE_LIB
+    local TARGET_LIB
 
-    if [ -e "$FILE_PATH" ]; then
-        local FILE
-        local PARTITION
-        FILE="$(echo -n "$FILE_PATH" | sed "s.$WORK_DIR/..")"
-        PARTITION="$(echo -n "$FILE" | cut -d "/" -f 1)"
+    for d in "lib" "lib64"; do
+        SOURCE_LIB="$(find "$WORK_DIR/system/system/$d" -maxdepth 1 -name "$PATTERN" -printf "%f\n")"
+        TARGET_LIB="$(find "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/$d" -maxdepth 1 -name "$PATTERN" -printf "%f\n")"
 
-        echo "Debloating /$FILE"
-        rm -rf "$FILE_PATH"
+        if [[ "$SOURCE_LIB" == "$TARGET_LIB" ]]; then
+            continue
+        fi
 
-        [[ "$PARTITION" == "system" ]] && FILE="$(echo "$FILE" | sed 's.^system/system/.system/.')"
-        FILE="$(echo -n "$FILE" | sed 's/\//\\\//g')"
-        sed -i "/$FILE /d" "$WORK_DIR/configs/fs_config-$PARTITION"
-
-        FILE="$(echo -n "$FILE" | sed 's/\./\\\\\./g')"
-        sed -i "/$FILE /d" "$WORK_DIR/configs/file_context-$PARTITION"
-    fi
+        if [ "$SOURCE_LIB" ]; then
+            DELETE_FROM_WORK_DIR "system" "system/$d/$SOURCE_LIB"
+        fi
+        if [ "$TARGET_LIB" ]; then
+            ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/$d/$TARGET_LIB" 0 0 644 "u:object_r:system_lib_file:s0"
+            ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/$d/$WRAPPER" 0 0 644 "u:object_r:system_lib_file:s0"
+        else
+            DELETE_FROM_WORK_DIR "system" "system/$d/$WRAPPER"
+        fi
+    done
 }
 
-MODEL=$(echo -n "$TARGET_FIRMWARE" | cut -d "/" -f 1)
-REGION=$(echo -n "$TARGET_FIRMWARE" | cut -d "/" -f 2)
+MATCH_TARGET_FEATURES()
+{
+    local SOURCE_FEATURES
+    local TARGET_FEATURES
 
-echo "Replacing boot animation blobs with stock"
-BLOBS_LIST="
-/system/system/media/battery_error.spi
-/system/system/media/battery_lightning_fast.spi
-/system/system/media/battery_lightning.spi
-/system/system/media/battery_low.spi
-/system/system/media/battery_temperature_error.spi
-/system/system/media/battery_temperature_limit.spi
-/system/system/media/battery_water_usb.spi
-/system/system/media/bootsamsungloop.qmg
-/system/system/media/bootsamsung.qmg
-/system/system/media/charging_vi_100.spi
-/system/system/media/charging_vi_level1.spi
-/system/system/media/charging_vi_level2.spi
-/system/system/media/charging_vi_level3.spi
-/system/system/media/charging_vi_level4.spi
-/system/system/media/dock_error_usb.spi
-/system/system/media/incomplete_connect.spi
-/system/system/media/lcd_density.txt
-/system/system/media/percentage.spi
-/system/system/media/safety_timer_usb.spi
-/system/system/media/shutdown.qmg
-/system/system/media/slow_charging_usb.spi
-/system/system/media/temperature_limit_usb.spi
-/system/system/media/water_protection_usb.spi
-"
-for blob in $BLOBS_LIST
-do
-    cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}$blob" "$WORK_DIR$blob"
+    SOURCE_FEATURES="$(find "$WORK_DIR/system/system/etc/permissions" -name "com.sec.feature*" -printf "%f\n")"
+    SOURCE_FEATURES="$(sort <<< "$SOURCE_FEATURES")"
+    TARGET_FEATURES="$(find "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/etc/permissions" -name "com.sec.feature*" -printf "%f\n")"
+    TARGET_FEATURES="$(sort <<< "$TARGET_FEATURES")"
+
+    for f in $SOURCE_FEATURES; do
+        if ! grep -q "$f" <<< "$TARGET_FEATURES"; then
+            DELETE_FROM_WORK_DIR "system" "system/etc/permissions/$f"
+        fi
+    done
+    for f in $TARGET_FEATURES; do
+        if ! grep -q "$f" <<< "$SOURCE_FEATURES"; then
+            ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/permissions/$f" 0 0 644 "u:object_r:system_file:s0"
+        fi
+    done
+}
+# ]
+
+TARGET_FIRMWARE_PATH="$(cut -d "/" -f 1 -s <<< "$TARGET_FIRMWARE")_$(cut -d "/" -f 2 -s <<< "$TARGET_FIRMWARE")"
+
+MATCH_TARGET_FEATURES
+
+if [ -d "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/etc/saiv" ]; then
+    ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
+        "system/etc/saiv/image_understanding/db/aic_classifier/aic_classifier_cnn.info" 0 0 644 "u:object_r:system_file:s0"
+    ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
+        "system/etc/saiv/image_understanding/db/aic_detector/aic_detector_cnn.info" 0 0 644 "u:object_r:system_file:s0"
+else
+    if [ -d "$WORK_DIR/system/system/etc/saiv" ]; then
+        DELETE_FROM_WORK_DIR "system" "system/etc/saiv"
+    fi
+fi
+
+if [ -f "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/etc/COSPatchScript" ]; then
+    ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/COSPatchScript" 0 0 644 "u:object_r:system_file:s0"
+else
+    if [ -f "$WORK_DIR/system/system/etc/COSPatchScript" ]; then
+        DELETE_FROM_WORK_DIR "system" "system/etc/COSPatchScript"
+    fi
+fi
+
+# TODO add APE/DSD extractor libs if required
+if [ -f "$WORK_DIR/system/system/lib64/extractors/libsapeextractor.so" ] && \
+        [ ! "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_MMFW_SUPPORT_APE_FORMAT")" ]; then
+    DELETE_FROM_WORK_DIR "system" "system/lib64/extractors/libsapeextractor.so"
+fi
+if [ -f "$WORK_DIR/system/system/lib64/extractors/libsdffextractor.so" ] && \
+        [ ! "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_MMFW_SUPPORT_DSD_FORMAT")" ]; then
+    DELETE_FROM_WORK_DIR "system" "system/lib64/extractors/libsdffextractor.so"
+fi
+if [ -f "$WORK_DIR/system/system/lib64/extractors/libsdsfextractor.so" ] && \
+        [ ! "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_MMFW_SUPPORT_DSD_FORMAT")" ]; then
+    DELETE_FROM_WORK_DIR "system" "system/lib64/extractors/libsdsfextractor.so"
+fi
+
+MATCH_TARGET_AUDIO_FX_LIB "libaudiosaplus_sec_legacy.so" "lib_SoundAlive_play_plus_ver*.so"
+MATCH_TARGET_AUDIO_FX_LIB "libsamsungSoundbooster_plus_legacy.so" "lib_SoundBooster_ver*.so"
+for d in "lib" "lib64"; do
+    if [ -f "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/$d/libmysound_legacy.so" ]; then
+        ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/$d/libmysound_legacy.so" 0 0 644 "u:object_r:system_lib_file:s0"
+    elif [ -f "$WORK_DIR/system/system/$d/libmysound_legacy.so" ]; then
+        DELETE_FROM_WORK_DIR "system" "system/$d/libmysound_legacy.so"
+    fi
 done
 
-echo "Replacing saiv blobs with stock"
-if [ -d "$FW_DIR/${MODEL}_${REGION}/system/system/etc/saiv" ]; then
-    BLOBS_LIST="
-    /system/system/etc/saiv/image_understanding/db/aic_classifier/aic_classifier_cnn.info
-    /system/system/etc/saiv/image_understanding/db/aic_detector/aic_detector_cnn.info
-    "
-    for blob in $BLOBS_LIST
-    do
-        cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}$blob" "$WORK_DIR$blob"
-    done
-else
-    REMOVE_FROM_WORK_DIR "$WORK_DIR/system/system/etc/saiv"
-fi
-REMOVE_FROM_WORK_DIR "$WORK_DIR/system/system/saiv"
-cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/system/system/saiv" "$WORK_DIR/system/system/saiv"
-while read -r i; do
-    FILE="$(echo -n "$i"| sed "s.$WORK_DIR/system/..")"
-    [ -d "$i" ] && echo "$FILE 0 0 755 capabilities=0x0" >> "$WORK_DIR/configs/fs_config-system"
-    [ -f "$i" ] && echo "$FILE 0 0 644 capabilities=0x0" >> "$WORK_DIR/configs/fs_config-system"
-    FILE="$(echo -n "$FILE" | sed 's/\./\\./g')"
-    echo "/$FILE u:object_r:system_file:s0" >> "$WORK_DIR/configs/file_context-system"
-done <<< "$(find "$WORK_DIR/system/system/saiv")"
+ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/media/bootsamsung.qmg" 0 0 644 "u:object_r:system_file:s0"
+ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/media/bootsamsungloop.qmg" 0 0 644 "u:object_r:system_file:s0"
+ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/media/shutdown.qmg" 0 0 644 "u:object_r:system_file:s0"
 
-echo "Replacing cameradata blobs with stock"
-REMOVE_FROM_WORK_DIR "$WORK_DIR/system/system/cameradata"
-cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/system/system/cameradata" "$WORK_DIR/system/system/cameradata"
-while read -r i; do
-    FILE="$(echo -n "$i"| sed "s.$WORK_DIR/system/..")"
-    [ -d "$i" ] && echo "$FILE 0 0 755 capabilities=0x0" >> "$WORK_DIR/configs/fs_config-system"
-    [ -f "$i" ] && echo "$FILE 0 0 644 capabilities=0x0" >> "$WORK_DIR/configs/fs_config-system"
-    FILE="$(echo -n "$FILE" | sed 's/\./\\./g')"
-    echo "/$FILE u:object_r:system_file:s0" >> "$WORK_DIR/configs/file_context-system"
-done <<< "$(find "$WORK_DIR/system/system/cameradata")"
+if [ -f "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/priv-app/SohService/SohService.apk" ]; then
+    DECODE_APK "system" "system/priv-app/SohService/SohService.apk"
 
-if [ -f "$FW_DIR/${MODEL}_${REGION}/system/system/usr/share/alsa/alsa.conf" ]; then
-    echo "Add stock alsa.conf"
-    mkdir -p "$WORK_DIR/system/system/usr/share/alsa"
-    cp -a --preserve=all "$FW_DIR/${MODEL}_${REGION}/system/system/usr/share/alsa/alsa.conf" \
-        "$WORK_DIR/system/system/usr/share/alsa/alsa.conf"
-    if ! grep -q "alsa\.conf" "$WORK_DIR/configs/file_context-system"; then
-        {
-            echo "/system/usr/share/alsa u:object_r:system_file:s0"
-            echo "/system/usr/share/alsa/alsa\.conf u:object_r:system_file:s0"
-        } >> "$WORK_DIR/configs/file_context-system"
-    fi
-    if ! grep -q "alsa.conf" "$WORK_DIR/configs/fs_config-system"; then
-        {
-            echo "system/usr/share/alsa 0 0 755 capabilities=0x0"
-            echo "system/usr/share/alsa/alsa.conf 0 0 644 capabilities=0x0"
-        } >> "$WORK_DIR/configs/fs_config-system"
-    fi
+    LOG "- Adding target BSOH blobs"
+    EVAL "rm -r \"$APKTOOL_DIR/system/priv-app/SohService/SohService.apk/assets\""
+    EVAL "unzip -q \"$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/priv-app/SohService/SohService.apk\" \"assets/*\" -d \"$APKTOOL_DIR/system/priv-app/SohService/SohService.apk\""
 else
-    REMOVE_FROM_WORK_DIR "$WORK_DIR/system/system/usr/share/alsa"
+    if [ -f "$WORK_DIR/system/system/priv-app/SohService/SohService.apk" ]; then
+        DELETE_FROM_WORK_DIR "system" "system/priv-app/SohService"
+    fi
 fi
+
+if [ -f "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/usr/share/alsa/alsa.conf" ]; then
+    ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/usr/share/alsa/alsa.conf" 0 0 644 "u:object_r:system_file:s0"
+else
+    if [ -d "$WORK_DIR/system/system/usr/share/alsa" ]; then
+        DELETE_FROM_WORK_DIR "system" "system/usr/share/alsa"
+    fi
+fi
+
+unset TARGET_FIRMWARE_PATH
+unset -f MATCH_TARGET_AUDIO_FX_LIB MATCH_TARGET_FEATURES
